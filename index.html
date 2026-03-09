@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mini Gestion Tâches</title>
+</head>
+<body>
+<h2>Gestion des Tâches</h2>
+<input type="text" id="taskInput" placeholder="Nouvelle tâche">
+<button onclick="addTask()">Ajouter</button>
+<h3>Liste des tâches</h3>
+<ul id="taskList"></ul>
+<p>Total : <span id="total">0</span></p>
+<script>
+function loadTasks() {
+fetch("api.php")
+.then(res => res.json())
+.then(data => {
+const list = document.getElementById("taskList");
+list.innerHTML = "";
+data.forEach(task => {
+list.innerHTML += `<li>${task.title}</li>`;
+});
+document.getElementById("total").innerText = data.length;
+});
+}
+function addTask() {
+const title = document.getElementById("taskInput").value;
+fetch("api.php", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({title: title})
+})
+.then(res => res.json())
+.then(task => {
+document.getElementById("taskList").innerHTML +=
+`<li>${task.title}</li>`;
+});
+document.getElementById("taskInput").value = "";
+}
+loadTasks();
+</script>
+</body>
+</html>
